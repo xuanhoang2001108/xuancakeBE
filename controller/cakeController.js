@@ -1,5 +1,5 @@
-const asyncHandler = require('express-async-handler');
-const Cake = require('../model/cake');
+const asyncHandler = require("express-async-handler");
+const Cake = require("../model/cake");
 
 //@desc Get all cakes Of User
 //@route GET /cake
@@ -14,14 +14,13 @@ const getSpecificCake = asyncHandler(async (req, res, next) => {
 });
 
 const getAllCake = asyncHandler(async (req, res, next) => {
-    const cakes = await Cake.find();
-    if (cakes.length === 0) {
-      res.status(404);
-      throw new Error("Dont have any cake!");
-    }
-    res.status(200).json(cakes);
-  });
-
+  const cakes = await Cake.find();
+  if (cakes.length === 0) {
+    res.status(404);
+    throw new Error("Dont have any cake!");
+  }
+  res.status(200).json(cakes);
+});
 
 // //@desc Get all Vehicles to Welcome Page
 // //@route GET /api/vehicles/home
@@ -38,43 +37,23 @@ const getAllCake = asyncHandler(async (req, res, next) => {
 // //@desc Register New Vehicle
 // //@route POST /api/Vehicles
 // //@access private
-// const registerVehicle = asyncHandler(async (req, res, next) => {
-//   const { licensePlate, description, insurance, price, isRented } = req.body;
-//   let { image } = req.body;
-//   if (
-//     !licensePlate ||
-//     !description ||
-//     !insurance ||
-//     !price ||
-//     isRented == null
-//   ) {
-//     res.status(400);
-//     throw new Error('All field not be empty!');
-//   }
-//   const vehicleAvailable = await Vehicle.findOne({ licensePlate });
-//   if (vehicleAvailable) {
-//     res.status(400);
-//     throw new Error('Vehicle has already registered with License Plates!');
-//   }
-//   if (image === undefined) {
-//     image = '';
-//   }
-//   const vehicle = await Vehicle.create({
-//     user_id: req.user.id,
-//     licensePlate,
-//     description,
-//     insurance,
-//     price,
-//     image,
-//     isRented,
-//   });
-//   if (vehicle) {
-//     res.status(201).json(vehicle);
-//   } else {
-//     res.status(400);
-//     throw new Error('Vehicle data is not Valid');
-//   }
-// });
+const postCake = asyncHandler(async (req, res, next) => {
+  const { name, image, type, price } = req.body;
+
+  const cake = await Cake.create({
+    name,
+    image,
+    type,
+    price,
+
+  });
+  if (cake) {
+    res.status(201).json(cake);
+  } else {
+    res.status(400);
+    throw new Error("Cake data is not Valid");
+  }
+});
 
 // //@desc Get Vehicle
 // //@route GET /api/Vehicles/:id
@@ -231,9 +210,10 @@ const getAllCake = asyncHandler(async (req, res, next) => {
 module.exports = {
   getAllCake,
   getSpecificCake,
-//   registerVehicle,
-//   getVehicleById,
-//   updateVehicles,
-//   deleteVehicles,
-//   uploadVehicleFromExcel,
+  postCake,
+  //   registerVehicle,
+  //   getVehicleById,
+  //   updateVehicles,
+  //   deleteVehicles,
+  //   uploadVehicleFromExcel,
 };

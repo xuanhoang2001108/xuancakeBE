@@ -20,6 +20,7 @@ const cakeSchema = new mongoose.Schema(
     tax: {
       type: Number,
       require: true,
+      default: 0.01,
     },
   },
   {

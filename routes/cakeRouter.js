@@ -12,11 +12,11 @@ const {
 
 cakeRouter.use(bodyParser.json());
 
-cakeRouter.route("/getAll").get(getAllCake);
-// cakeRouter.route("/post").post(postCake);
+cakeRouter.route("/getAllCake").get(getAllCake);
+cakeRouter.route("/postCake").post(postCake); 
 // cakeRouter.route("/delete/:id").delete(deleteCake);
 // cakeRouter.route("/put/:id").put(putCake);
 
-cakeRouter.route("/getSpecific/:id").get(getSpecificCake);
+cakeRouter.route("/getSpecificCake/:id").get(getSpecificCake);
 
 module.exports = cakeRouter;
