@@ -1,9 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Cake = require("../model/cake");
 
-//@desc Get all cakes Of User
-//@route GET /cake
-//@access private
 const getSpecificCake = asyncHandler(async (req, res, next) => {
   const cakes = await Cake.findById(req.params.id);
   if (cakes.length === 0) {
@@ -22,21 +19,6 @@ const getAllCake = asyncHandler(async (req, res, next) => {
   res.status(200).json(cakes);
 });
 
-// //@desc Get all Vehicles to Welcome Page
-// //@route GET /api/vehicles/home
-// //@access private
-// const getAllVehicles = asyncHandler(async (req, res, next) => {
-//   const vehicles = await Vehicle.find().populate('user_id').exec();
-//   if (vehicles.length === 0) {
-//     res.status(404);
-//     throw new Error("Website don't have any Vehicle!");
-//   }
-//   res.status(200).json(vehicles);
-// });
-
-// //@desc Register New Vehicle
-// //@route POST /api/Vehicles
-// //@access private
 const postCake = asyncHandler(async (req, res, next) => {
   const { name, image, type, price } = req.body;
 
@@ -45,7 +27,6 @@ const postCake = asyncHandler(async (req, res, next) => {
     image,
     type,
     price,
-
   });
   if (cake) {
     res.status(201).json(cake);
@@ -54,7 +35,46 @@ const postCake = asyncHandler(async (req, res, next) => {
     throw new Error("Cake data is not Valid");
   }
 });
+const deleteCake = asyncHandler(async (req, res, next) => {
+  const cake = await Cake.findById(req.params.id);
 
+  if (!cake) {
+    res.status(404);
+    throw new Error("Cake not found");
+  }
+
+  await Cake.deleteOne({ _id: cake._id });
+  res.status(200).json({ message: "Cake deleted successfully" });
+});
+
+const updateCake = asyncHandler(async (req, res, next) => {
+  const { name, image, type, price } = req.body;
+  const cake = await Cake.findById(req.params.id);
+
+  if (!cake) {
+    res.status(404);
+    throw new Error("Cake not found");
+  }
+
+  cake.name = name || cake.name;
+  cake.image = image || cake.image;
+  cake.type = type || cake.type;
+  cake.price = price || cake.price;
+
+  const updatedCake = await cake.save();
+  res.status(200).json(updatedCake);
+});
+
+
+
+
+module.exports = {
+  getAllCake,
+  getSpecificCake,
+  postCake,
+  deleteCake,
+  updateCake
+};
 // //@desc Get Vehicle
 // //@route GET /api/Vehicles/:id
 // //@access private
@@ -103,21 +123,6 @@ const postCake = asyncHandler(async (req, res, next) => {
 // //@desc Delete Vehicle
 // //@route DELETE /api/Vehicles/:id
 // //@access private
-// const deleteVehicles = asyncHandler(async (req, res, next) => {
-//   const licensePlate = req.params.licensePlate;
-//   const vehicle = await Vehicle.findOne({ licensePlate });
-//   if (!vehicle) {
-//     res.status(404);
-//     throw new Error('Vehicle Not Found!');
-//   }
-//   const userId = vehicle.user_id.toString();
-//   if (userId !== req.user.id) {
-//     res.status(403);
-//     throw new Error("You don't have permission to update other vehicle!");
-//   }
-//   await Vehicle.deleteOne({ _id: vehicle._id });
-//   res.status(200).json(vehicle);
-// });
 
 // const uploadVehicleFromExcel = async (req, res, next) => {
 //   const workbook = XLSX.readFile(req.file.path, { sheetStubs: true });
@@ -206,14 +211,3 @@ const postCake = asyncHandler(async (req, res, next) => {
 //     message: `Successfully loaded excel file! Total Vehicles: ${totalVehicle}, Total Vehicle Details: ${totalVehicleDetails}`,
 //   });
 // };
-
-module.exports = {
-  getAllCake,
-  getSpecificCake,
-  postCake,
-  //   registerVehicle,
-  //   getVehicleById,
-  //   updateVehicles,
-  //   deleteVehicles,
-  //   uploadVehicleFromExcel,
-};

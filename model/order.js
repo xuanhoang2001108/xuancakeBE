@@ -1,19 +1,11 @@
 const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema(
-  { 
-  image: {
-    type: String,
-    require: true,
-  },
+const orderSchema = new mongoose.Schema({
   email: {
     type: String,
     require: true,
   },
-  type: {
-    type: String,
-    require: true,
-  },
+
   totalQuantity: {
     type: Number,
     require: true,
@@ -21,15 +13,19 @@ const orderSchema = new mongoose.Schema(
   totalPrice: {
     type: Number,
     require: true,
-  },    
+  },
   phoneNumber: {
     type: Number,
     require: true,
   },
-  tax: {
+  totalTax: {
     type: Number,
     require: true,
   },
+  status: {
+    type: String,
+    require: true,
+  }
 });
 
 module.exports = mongoose.model("Order", orderSchema);
