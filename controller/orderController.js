@@ -41,7 +41,7 @@ const deleteOrder = asyncHandler(async (req, res, next) => {
 });
 
 const updateOrder = asyncHandler(async (req, res, next) => {
-  const { id, email, totalPrice, totalTax, status } = req.body;
+  const { id, email,phoneNumber, totalPrice, totalTax, status } = req.body;
   const order = await Order.findById(req.params.id);
 
   if (!order) {
@@ -51,6 +51,7 @@ const updateOrder = asyncHandler(async (req, res, next) => {
 
   order.id = id || order.id;
   order.email = email || order.email;
+  order.phoneNumber = phoneNumber || order.phoneNumber;
   order.totalPrice = totalPrice || order.totalPrice;
   order.totalTax = totalTax || order.totalTax;
   order.status = status || order.status;
