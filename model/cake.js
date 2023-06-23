@@ -1,30 +1,49 @@
 const mongoose = require("mongoose");
+const userSchema = new mongoose.Schema({
+  // Định nghĩa các trường của model "User"
+  // ...
+});
+const User = mongoose.model("User", userSchema);
 const cakeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
     },
     image: {
       type: String,
-      require: true,
+      required: true,
     },
     type: {
       type: String,
-      require: true,
+      required: true,
     },
     price: {
       type: Number,
-      require: true,
+      required: true,
     },
     tax: {
       type: Number,
-      require: true,
+      required: true,
       default: 0.01,
     },
+    comment: String,
+    description: {
+      type: String,
+      required: true,
+    },
+    email: String,
+    comments: [
+      {
+        email: String,
+        comment: String,
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
+
 module.exports = mongoose.model("Cake", cakeSchema);

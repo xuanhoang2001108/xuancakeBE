@@ -8,6 +8,7 @@ const {
   postCake,
   deleteCake,
   updateCake,
+  
 } = require("../controller/cakeController");
 
 cakeRouter.use(bodyParser.json());
@@ -15,7 +16,7 @@ cakeRouter.use(bodyParser.json());
 cakeRouter.route("/getAllCake").get(getAllCake);
 cakeRouter.route("/postCake").post(postCake);
 cakeRouter.route("/deleteCake/:id").delete(deleteCake);
-cakeRouter.route("/updateCake/:id").put(updateCake);
+cakeRouter.route("/updateCake/:id").patch(updateCake);
 cakeRouter.route("/getSpecificCake/:id").get(getSpecificCake);
 
 module.exports = cakeRouter;
