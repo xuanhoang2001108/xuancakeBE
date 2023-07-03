@@ -72,7 +72,6 @@ const calculateTotalOrdersInMonth = asyncHandler(async (req, res, next) => {
   res.status(200).json({ monthlyOrders });
 });
 
-
 const deleteOrder = asyncHandler(async (req, res, next) => {
   const orderId = req.params.id;
   const order = await Order.findById(orderId);
@@ -105,6 +104,44 @@ const updateOrder = asyncHandler(async (req, res, next) => {
   const updatedOrder = await order.save();
   res.status(200).json(updatedOrder);
 });
+const searchOrder = asyncHandler(async (req, res, next) => {
+  const { searchTerm } = req.query;
+
+  try {
+    console.log("Search term:", searchTerm);
+
+    let query = {};
+
+    if (searchTerm) {
+      if (!isNaN(searchTerm)) {
+        // Nếu searchTerm là một chuỗi số
+        query = {
+          phoneNumber: searchTerm,
+        };
+      } else {
+        // Nếu searchTerm là một chuỗi không phải số
+        query = {
+          email: { $regex: searchTerm, $options: "i" },
+        };
+      }
+    }
+
+    console.log("Query:", query);
+
+    const orders = await Order.find(query);
+
+    console.log("Orders:", orders);
+
+    if (orders.length === 0) {
+      res.status(404).json({ message: "No order found" });
+    } else {
+      res.status(200).json(orders);
+    }
+  } catch (error) {
+    console.log("Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 module.exports = {
   postOrder,
@@ -114,4 +151,5 @@ module.exports = {
   getSpecificOrder,
   calculateTotalEarn,
   calculateTotalOrdersInMonth,
+  searchOrder,
 };

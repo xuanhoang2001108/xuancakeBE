@@ -10,6 +10,7 @@ const {
   getSpecificOrder,
   calculateTotalEarn,
   calculateTotalOrdersInMonth,
+  searchOrder,
 } = require("../controller/orderController");
 
 orderRouter.use(bodyParser.json());
@@ -21,4 +22,6 @@ orderRouter.route("/updateOrder/:id").patch(updateOrder);
 orderRouter.route("/getSpecificOrder/:email").get(getSpecificOrder);
 orderRouter.route("/calculateTotalEarn").get(calculateTotalEarn);
 orderRouter.route("/calculateTotalOrdersInMonth").get(calculateTotalOrdersInMonth);
+orderRouter.route("/searchOrder").get(searchOrder);
+
 module.exports = orderRouter;
