@@ -25,8 +25,11 @@ const orderSchema = new mongoose.Schema({
   status: {
     type: String,
     require: true,
+  },
+  paymentStatus: {
+    type: String,
+    require: true,
   }
-  
 },
 {
   timestamps: true,

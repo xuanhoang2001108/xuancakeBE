@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+
 const Cake = require("../model/cake");
 
 const getSpecificCake = asyncHandler(async (req, res, next) => {
@@ -27,7 +28,7 @@ const postCake = asyncHandler(async (req, res) => {
     image,
     type,
     price,
-    comments: [{ email, comment: comments }],
+    comments: comments ? [{ email, comment: comments }] : [],
     description,
     email,
   });
@@ -69,7 +70,7 @@ const updateCake = asyncHandler(async (req, res) => {
     cake.comments.push({
       email,
       comment,
-      user: req.user ? req.user._id : null,
+      
     });
   }
 

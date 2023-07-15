@@ -2,8 +2,15 @@ const asyncHandler = require("express-async-handler");
 const Order = require("../model/order");
 
 const postOrder = asyncHandler(async (req, res, next) => {
-  const { email, totalQuantity, totalPrice, phoneNumber, totalTax, status } =
-    req.body;
+  const {
+    email,
+    totalQuantity,
+    totalPrice,
+    phoneNumber,
+    totalTax,
+    status,
+    paymentStatus,
+  } = req.body;
 
   const order = await Order.create({
     email,
@@ -12,6 +19,7 @@ const postOrder = asyncHandler(async (req, res, next) => {
     phoneNumber,
     totalTax,
     status: "Pending",
+    paymentStatus: "Not Paid",
   });
   if (order) {
     res.status(201).json(order);
@@ -40,10 +48,10 @@ const getAllOrder = asyncHandler(async (req, res, next) => {
   res.status(200).json(order);
 });
 const calculateTotalEarn = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find();
+  const orders = await Order.find({ paymentStatus: "Paid" });
   if (orders.length === 0) {
     res.status(404);
-    throw new Error("No orders found!");
+    throw new Error("No paid orders found!");
   }
 
   const monthlyEarnings = Array(12).fill(0); // Initialize an array to store earnings for each month
@@ -55,6 +63,24 @@ const calculateTotalEarn = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ monthlyEarnings });
 });
+const calculateTotalProvisionalEarning = asyncHandler(
+  async (req, res, next) => {
+    const orders = await Order.find();
+    if (orders.length === 0) {
+      res.status(404);
+      throw new Error("No paid orders found!");
+    }
+
+    const monthlyProvisionalEarnings = Array(12).fill(0); // Initialize an array to store earnings for each month
+
+    orders.forEach((order) => {
+      const orderMonth = order.createdAt.getMonth();
+      monthlyProvisionalEarnings[orderMonth] += order.totalPrice;
+    });
+    res.status(200).json({ monthlyProvisionalEarnings });
+  }
+);
+
 const calculateTotalOrdersInMonth = asyncHandler(async (req, res, next) => {
   const orders = await Order.find();
   if (orders.length === 0) {
@@ -72,6 +98,23 @@ const calculateTotalOrdersInMonth = asyncHandler(async (req, res, next) => {
   res.status(200).json({ monthlyOrders });
 });
 
+const calculateTotalPaidOrdersInMonth = asyncHandler(async (req, res, next) => {
+  const orders = await Order.find({ paymentStatus: "Paid" });
+  if (orders.length === 0) {
+    res.status(404);
+    throw new Error("No orders found!");
+  }
+
+  const monthlyPaidOrders = Array(12).fill(0); // Initialize an array to store total orders for each month
+
+  orders.forEach((order) => {
+    const orderMonth = order.createdAt.getMonth();
+    monthlyPaidOrders[orderMonth]++;
+  });
+
+  res.status(200).json({ monthlyPaidOrders });
+});
+
 const deleteOrder = asyncHandler(async (req, res, next) => {
   const orderId = req.params.id;
   const order = await Order.findById(orderId);
@@ -87,7 +130,8 @@ const deleteOrder = asyncHandler(async (req, res, next) => {
 
 const updateOrder = asyncHandler(async (req, res, next) => {
   const orderId = req.params.id;
-  const { email, phoneNumber, totalPrice, totalTax, status } = req.body;
+  const { email, phoneNumber, totalPrice, totalTax, status, paymentStatus } =
+    req.body;
 
   const order = await Order.findById(orderId);
   if (!order) {
@@ -100,6 +144,7 @@ const updateOrder = asyncHandler(async (req, res, next) => {
   order.totalPrice = totalPrice || order.totalPrice;
   order.totalTax = totalTax || order.totalTax;
   order.status = status || order.status;
+  order.paymentStatus = paymentStatus || order.paymentStatus;
 
   const updatedOrder = await order.save();
   res.status(200).json(updatedOrder);
@@ -142,6 +187,24 @@ const searchOrder = asyncHandler(async (req, res, next) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+const cancelOrder = asyncHandler(async (req, res, next) => {
+  const orderId = req.params.id;
+  const order = await Order.findById(orderId);
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+
+  if (order.status !== "Pending") {
+    res.status(400);
+    throw new Error("Cannot cancel order");
+  }
+
+  order.status = "Canceled";
+  const canceledOrder = await order.save();
+  res.status(200).json(canceledOrder);
+});
 
 module.exports = {
   postOrder,
@@ -152,4 +215,7 @@ module.exports = {
   calculateTotalEarn,
   calculateTotalOrdersInMonth,
   searchOrder,
+  cancelOrder,
+  calculateTotalProvisionalEarning,
+  calculateTotalPaidOrdersInMonth,
 };
