@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('xuancakebe:server');
+var debug = require('debug')(DB_URL);
 var http = require('http');
 
 /**
