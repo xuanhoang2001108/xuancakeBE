@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node bin/server.js"
+    "build": "node bin/server.js"
   },
   "dependencies": {
     "body-parse": "^0.1.0",
