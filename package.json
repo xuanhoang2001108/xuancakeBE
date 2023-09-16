@@ -26,6 +26,9 @@
   "bin": {
     "xuancakebe": "bin/server.js"
   },
+  "engines": {
+  "node": ">=14.20.1"
+},
   "devDependencies": {},
   "author": "",
   "license": "ISC",
