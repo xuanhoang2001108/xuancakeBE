@@ -1,7 +1,5 @@
-if (process.env.NODE_ENV != "production") {
-  require("dotenv").config();
-}
 
+require("dotenv").config();
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 async function connectToDb() {
