@@ -1,6 +1,6 @@
 var app = require("../app");
 var debug = require("debug")("xuancakebe:server");
-var http = require("http");
+var http = require("https");
 
 var port = normalizePort("3000");
 app.set("port", port);
